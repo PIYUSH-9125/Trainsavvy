@@ -1,55 +1,38 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
 body {
-  background: #f5f7fa;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
 }
 
 .container {
-  width: 450px;
-  margin: 80px auto;
-  background: white;
+  max-width: 900px;
+  margin: 40px auto;
   padding: 30px;
+  background: white;
   border-radius: 15px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
 h1 {
-  text-align: center;
   color: #1565C0;
+  text-align: center;
 }
 
 p {
   text-align: center;
-  margin-bottom: 20px;
+  color: #555;
 }
 
-input {
+input[type="text"],
+input[type="date"] {
   width: 100%;
   padding: 12px;
   margin: 10px 0;
   border-radius: 8px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
-button {
-  width: 100%;
-  padding: 12px;
-  background: #1565C0;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background: #0D47A1;
-}
 .options {
   margin: 20px 0;
 }
@@ -57,10 +40,38 @@ button:hover {
 .options label {
   display: block;
   margin: 10px 0;
-  font-size: 16px;
 }
 
-.options input {
-  width: auto;
-  margin-right: 10px;
+button {
+  width: 100%;
+  padding: 14px;
+  background: #1565C0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0d47a1;
+}
+
+.train-card {
+  background: white;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  text-align: left;
+}
+
+.train-card h2 {
+  color: #1565C0;
+  margin-bottom: 15px;
+}
+
+.train-card p {
+  margin: 10px 0;
+  color: #333;
 }
