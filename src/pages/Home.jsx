@@ -1,16 +1,29 @@
 import { useState } from "react";
+
 import TrainCard from "../components/TrainCard";
+import JourneyCard from "../components/JourneyCard";
+import StationInput from "../components/StationInput";
+
 import { stationData } from "../data/stations";
 import { alternativeRoutes } from "../data/alternativeRoutes";
-import { findDirectRoutes } from "../algorithms/routeFinder";
+import { allStations } from "../data/allStations";
 
+import { findDirectRoutes } from "../algorithms/routeFinder";
+import { findOneChangeRoute } from "../algorithms/changeRouteFinder";
+import { findBestRoutes } from "../algorithms/bestRouteFinder";
+import { filterRoutes } from "../algorithms/filterRoutes";
+import Timeline from "../components/Timeline";
 function Home() {
   const [source, setSource] = useState("");
   const [destination, setDestination] = useState("");
   const [journeyDate, setJourneyDate] = useState("");
   const [priority, setPriority] = useState("");
   const [showResults, setShowResults] = useState(false);
-  const [results, setResults] = useState([]);
+
+  const [results, setResults] = useState({
+    direct: [],
+    change: [],
+  });
 
   const alternativeStations = stationData[source] || [];
 
@@ -20,29 +33,36 @@ function Home() {
       return;
     }
 
-    const routes = findDirectRoutes(source, destination);
+    const directRoutes = findDirectRoutes(source, destination);
 
-    setResults(routes);
+    const changeRoutes = findOneChangeRoute(source, destination);
+
+    const bestRoutes = findBestRoutes(changeRoutes);
+    const filteredRoutes = filterRoutes(bestRoutes,priority); 
+    setResults({
+      direct: directRoutes,
+      change: filteredRoutes,
+    });
+
     setShowResults(true);
   };
-
   return (
     <div className="container">
       <h1>🚆 TrainSavvy</h1>
       <p>Travel Smarter, Not Harder.</p>
 
-      <input
-        type="text"
+      <StationInput
         placeholder="Enter Source Station"
         value={source}
-        onChange={(e) => setSource(e.target.value)}
+        setValue={setSource}
+        stations={allStations}
       />
 
-      <input
-        type="text"
+      <StationInput
         placeholder="Enter Destination Station"
         value={destination}
-        onChange={(e) => setDestination(e.target.value)}
+        setValue={setDestination}
+        stations={allStations}
       />
 
       <label>Journey Date</label>
@@ -114,28 +134,45 @@ function Home() {
       {showResults && (
         <>
           <h2 className="results-heading">
-            🚆 Recommended Trains
+            🚆 Recommended Direct Trains
           </h2>
 
-          {results.length === 0 ? (
-            <p>No direct trains found.</p>
-          ) : (
-            results.map((train) => (
+          {results.direct.length > 0 ? (
+            results.direct.map((train) => (
               <TrainCard
                 key={train.trainNo}
                 train={{
                   name: train.trainName,
-                  departure: train.departure,
-                  arrival: train.arrival,
-                  duration: "--",
-                  fare: "--",
-                  platform: "--",
+                  departure: train.departure || "--",
+                  arrival: train.arrival || "--",
+                  duration: train.duration || "--",
+                  fare: train.fare || "--",
+                  platform: train.platform || "--",
                   changes: 0,
-                  seat: "--",
+                  seat: train.seat || "--",
                   reason: "Direct Route",
                 }}
               />
             ))
+          ) : (
+            <p>🚆 No direct trains found.</p>
+          )}
+
+          {results.change.length > 0 && (
+            <>
+              <h2>🚆 Smart Route Recommendation</h2>
+
+              {results.change.map((route, index) => (
+  <div key={index}>
+    <JourneyCard
+      route={route}
+      rank={index}
+    />
+
+    <Timeline route={route} />
+  </div>
+))}
+            </>
           )}
 
           <h2>⭐ Smarter Alternative Routes</h2>
